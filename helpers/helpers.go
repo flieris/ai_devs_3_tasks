@@ -13,22 +13,51 @@ type JsonMessage struct {
 	Text  string `json:"text"`
 }
 
-func SendJson(apiUrl string, message JsonMessage) (*JsonMessage, error) {
-	jsonData, err := json.Marshal(message)
+type JsonAnswer struct {
+	Task   string      `json:"task"`
+	ApiKey string      `json:"apikey"`
+	Answer interface{} `json:"answer"`
+}
+
+type JsonResponse struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}
+
+func sendRequest(apiUrl string, requestBody interface{}, responseObj interface{}) error {
+	jsonData, err := json.Marshal(requestBody)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	resp, err := http.Post(apiUrl, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer resp.Body.Close()
 
+	if err := json.NewDecoder(resp.Body).Decode(responseObj); err != nil {
+		return err
+	}
+	return nil
+}
+
+func SendJson(apiUrl string, message JsonMessage) (*JsonMessage, error) {
 	var responseObj JsonMessage
-	if err := json.NewDecoder(resp.Body).Decode(&responseObj); err != nil {
+	err := sendRequest(apiUrl, message, &responseObj)
+	if err != nil {
 		return nil, err
 	}
+	return &responseObj, nil
+}
+
+func SendAnswer(apiUrl string, message JsonAnswer) (*JsonResponse, error) {
+	var responseObj JsonResponse
+	err := sendRequest(apiUrl, message, &responseObj)
+	if err != nil {
+		return nil, err
+	}
+
 	return &responseObj, nil
 }
 
