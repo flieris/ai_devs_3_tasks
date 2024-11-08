@@ -1,4 +1,4 @@
-package openaiservice
+package llmservices
 
 import (
 	"context"
@@ -12,7 +12,7 @@ type OpenAiService struct {
 	client *openai.Client
 }
 
-func New() *OpenAiService {
+func NewOpenAiServcie() *OpenAiService {
 	openAiClient := openai.NewClient(os.Getenv("OPENAI_API_KEY"))
 
 	serviceInstance := &OpenAiService{

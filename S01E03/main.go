@@ -2,7 +2,7 @@ package main
 
 import (
 	"ai_devs_3_tasks/helpers"
-	"ai_devs_3_tasks/openaiservice"
+	"ai_devs_3_tasks/llmservices"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -46,9 +46,9 @@ func sumExpression(expr string) (int, error) {
 }
 
 func sendQuestion(question string) (string, error) {
-	openAI := openaiservice.New()
+	openAI := llmservices.NewOpenAiServcie()
 
-	req := openaiservice.CompletionRequest{
+	req := llmservices.CompletionRequest{
 		Messages: []openai.ChatCompletionMessage{
 			{
 				Role:    openai.ChatMessageRoleSystem,
@@ -120,7 +120,7 @@ func main() {
 		Answer: calibDataJson,
 	}
 
-	resp, err := helpers.SendAnswer(os.Getenv("S01E03_URL_2"), message)
+	resp, err := helpers.SendAnswer(os.Getenv("REPORT_URL"), message)
 	if err != nil {
 		log.Fatal(err)
 	}

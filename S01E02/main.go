@@ -2,7 +2,7 @@ package main
 
 import (
 	"ai_devs_3_tasks/helpers"
-	"ai_devs_3_tasks/openaiservice"
+	"ai_devs_3_tasks/llmservices"
 	"context"
 	"log"
 	"os"
@@ -27,9 +27,9 @@ func main() {
 	msgId := apiResponse.MsgID
 	question := apiResponse.Text
 
-	openAI := openaiservice.New()
+	openAI := llmservices.NewOpenAiServcie()
 
-	req := openaiservice.CompletionRequest{
+	req := llmservices.CompletionRequest{
 		Messages: []openai.ChatCompletionMessage{
 			{
 				Role:    openai.ChatMessageRoleSystem,
