@@ -16,16 +16,25 @@ import (
 
 const (
 	systemPrompt = `
-You are retreving information about person of interest:
-  - the transcription is in Polish
-  - the person of interest is called "Andrzej Maj" or "profesor Maj" 
-  - identifiy the university and the departement where this person works at
-  - output only the street name of the departement where the person of interest works at
-  - return only the street name with no other text
+<prompt_objective>
+Your task is to retrive a street name of the institute of one of the polish univerisites where the person if interest works at.
+</prompt_objective>
+<prompt_rules>
+  - The transcription is in Polish.
+  - The person of interest is called "Andrzej Maj" or "profesor Maj."
+  - Identify the university and the insitute where this person works.
+  - based on the name of the institute, try to get the street name
+  - if no street name can be deduced, return nothing
+  - Output only the street name of the institute where the person works, with no additional text.
+  - Deduce the correct street name from the context provided.
+  - you can think aloud, just provide an definitive answer at the end.
+  - some transcriptions may contain incorrect information
+  - if the street name is a name of a person, return only surname
+</prompt_rules>
   `
 )
 
-func reviewTranscription(transcription string, openaiClient *llmservices.OpenAiService) (string, error) {
+func reviewTranscription(ctx context.Context, transcription string, openaiClient *llmservices.OpenAiService) (string, error) {
 	req := llmservices.CompletionRequest{
 		Messages: []openai.ChatCompletionMessage{
 			{
@@ -40,7 +49,6 @@ func reviewTranscription(transcription string, openaiClient *llmservices.OpenAiS
 		Model:  openai.GPT4o, // or leave empty for default GPT-4
 		Stream: false,
 	}
-	ctx := context.Background()
 	response, _, err := openaiClient.Completion(ctx, req)
 	if err != nil {
 		log.Printf("Error from OpenAI api: %v", err)
@@ -97,7 +105,7 @@ func main() {
 
 	transcriptionsString := strings.Join(transcriptions, "\n")
 
-	review, err := reviewTranscription(transcriptionsString, client)
+	review, err := reviewTranscription(ctx, transcriptionsString, client)
 	if err != nil {
 		log.Fatalf("Error reviewing transcriptions: %v", err)
 	}
