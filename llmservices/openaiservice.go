@@ -54,3 +54,15 @@ func (serviceInstance *OpenAiService) Completion(ctx context.Context, req Comple
 
 	return &resp, nil, nil
 }
+
+func (serviceInstance *OpenAiService) Transcribe(ctx context.Context, req openai.AudioRequest) (*openai.AudioResponse, error) {
+	if req.Model == "" {
+		req.Model = openai.Whisper1
+	}
+
+	resp, err := serviceInstance.client.CreateTranscription(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}

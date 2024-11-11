@@ -1,10 +1,14 @@
 package helpers
 
 import (
+	"archive/zip"
 	"bytes"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -85,4 +89,63 @@ func GetData(apiUrl string) ([]byte, error) {
 		return nil, err
 	}
 	return body, nil
+}
+
+func GetZip(apiUrl string, zipPath string) (err error) {
+	zipFileBytes, err := GetData(os.Getenv("S02E01_URL"))
+
+	out, err := os.Create(zipPath)
+	if err != nil {
+		return
+	}
+	defer out.Close()
+
+	// Write the body to file
+	_, err = io.Copy(out, bytes.NewReader(zipFileBytes))
+	if err != nil {
+		return
+	}
+	log.Printf("File downloaded: %s", zipPath)
+	return
+}
+
+func Unzip(zipFile string, unzipPath string) (err error) {
+	archive, err := zip.OpenReader(zipFile)
+	if err != nil {
+		return
+	}
+	defer archive.Close()
+
+	for _, f := range archive.File {
+		unzipPath := filepath.Join(unzipPath, f.Name)
+		if f.FileInfo().IsDir() {
+			if err := os.MkdirAll(unzipPath, os.ModePerm); err != nil {
+				log.Printf("Error: %v", err)
+			}
+			continue
+		}
+
+		if err := os.MkdirAll(filepath.Dir(unzipPath), os.ModePerm); err != nil {
+			log.Fatalf("Error: %v", err)
+		}
+
+		dstFile, err := os.OpenFile(unzipPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+		if err != nil {
+			continue
+		}
+
+		src, err := f.Open()
+		if err != nil {
+			continue
+		}
+
+		if _, err := io.Copy(dstFile, src); err != nil {
+			continue
+		}
+
+		dstFile.Close()
+		src.Close()
+
+	}
+	return
 }

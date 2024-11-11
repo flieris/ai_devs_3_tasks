@@ -1,1 +1,5 @@
 .env
+*.zip
+*.m4a
+# directories
+przesluchania/
