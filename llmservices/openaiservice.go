@@ -66,3 +66,11 @@ func (serviceInstance *OpenAiService) Transcribe(ctx context.Context, req openai
 	}
 	return &resp, nil
 }
+
+func (serviceInstance *OpenAiService) CreateImage(ctx context.Context, req openai.ImageRequest) (*openai.ImageResponse, error) {
+	image, err := serviceInstance.client.CreateImage(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return &image, nil
+}
