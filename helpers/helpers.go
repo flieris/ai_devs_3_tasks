@@ -92,7 +92,7 @@ func GetData(apiUrl string) ([]byte, error) {
 }
 
 func GetZip(apiUrl string, zipPath string) (err error) {
-	zipFileBytes, err := GetData(os.Getenv("S02E01_URL"))
+	zipFileBytes, err := GetData(apiUrl)
 
 	out, err := os.Create(zipPath)
 	if err != nil {
