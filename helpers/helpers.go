@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -44,6 +45,14 @@ func sendRequest(apiUrl string, requestBody interface{}, responseObj interface{}
 		return err
 	}
 	return nil
+}
+
+func (ja JsonAnswer) String() string {
+	jsonData, err := json.Marshal(ja)
+	if err != nil {
+		return fmt.Sprintf("Error converting JsonAnswer to string: %v", err)
+	}
+	return string(jsonData)
 }
 
 func SendJson(apiUrl string, message JsonMessage) (*JsonMessage, error) {
@@ -148,4 +157,9 @@ func Unzip(zipFile string, unzipPath string) (err error) {
 
 	}
 	return
+}
+
+func FileExists(filename string) bool {
+	_, err := os.Stat(filename)
+	return err == nil
 }
