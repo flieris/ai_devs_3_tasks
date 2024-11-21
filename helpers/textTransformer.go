@@ -21,7 +21,8 @@ const (
   - Output should be a comprehensive comma-separated list of at least 10 elements.
   - Emphasize the connections between the identified occupations and the characters in the document, providing clarity on their relevance.
   - Provide examples of keywords that would qualify as occupations related to the characters to guide the retrieval process.
-   
+  - if there is a date in the document name, add it to the keywords in the YYYY-MM-DD fromat
+  - Do not add anything to the text. Like "Słowa kluczowe"
   </rules>
   `
 )

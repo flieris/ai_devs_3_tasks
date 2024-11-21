@@ -159,6 +159,42 @@ func Unzip(zipFile string, unzipPath string) (err error) {
 	return
 }
 
+func UnzipSpecificFile(zipFile string, unzipPath string, specFile string) (err error) {
+	archive, err := zip.OpenReader(zipFile)
+	if err != nil {
+		return
+	}
+	defer archive.Close()
+
+	for _, f := range archive.File {
+		if f.Name != specFile {
+			continue
+		}
+		if err := os.MkdirAll(filepath.Dir(unzipPath), os.ModePerm); err != nil {
+			log.Fatalf("Error: %v", err)
+		}
+
+		dstFile, err := os.OpenFile(unzipPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+		if err != nil {
+			continue
+		}
+
+		src, err := f.Open()
+		if err != nil {
+			continue
+		}
+
+		if _, err := io.Copy(dstFile, src); err != nil {
+			continue
+		}
+
+		dstFile.Close()
+		src.Close()
+		break
+	}
+	return
+}
+
 func FileExists(filename string) bool {
 	_, err := os.Stat(filename)
 	return err == nil

@@ -28,6 +28,11 @@ type CompletionRequest struct {
 	Stream   bool
 }
 
+type EmbeddingRequest struct {
+	Input string
+	Model string
+}
+
 func (serviceInstance *OpenAiService) Completion(ctx context.Context, req CompletionRequest) (*openai.ChatCompletionResponse, *openai.ChatCompletionStream, error) {
 	if req.Model == "" {
 		req.Model = openai.GPT4
@@ -73,4 +78,17 @@ func (serviceInstance *OpenAiService) CreateImage(ctx context.Context, req opena
 		return nil, err
 	}
 	return &image, nil
+}
+
+func (serviceInstance *OpenAiService) CreateEmbedding(ctx context.Context, req openai.EmbeddingRequest) (openai.EmbeddingResponse, error) {
+	if req.Model == "" {
+		req.Model = openai.SmallEmbedding3
+	}
+
+	resp, err := serviceInstance.client.CreateEmbeddings(ctx, req)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }
