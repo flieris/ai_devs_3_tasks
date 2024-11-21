@@ -29,7 +29,7 @@ type JsonResponse struct {
 	Message string `json:"message"`
 }
 
-func sendRequest(apiUrl string, requestBody interface{}, responseObj interface{}) error {
+func SendRequest(apiUrl string, requestBody interface{}, responseObj interface{}) error {
 	jsonData, err := json.Marshal(requestBody)
 	if err != nil {
 		return err
@@ -57,7 +57,7 @@ func (ja JsonAnswer) String() string {
 
 func SendJson(apiUrl string, message JsonMessage) (*JsonMessage, error) {
 	var responseObj JsonMessage
-	err := sendRequest(apiUrl, message, &responseObj)
+	err := SendRequest(apiUrl, message, &responseObj)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func SendJson(apiUrl string, message JsonMessage) (*JsonMessage, error) {
 
 func SendAnswer(apiUrl string, message JsonAnswer) (*JsonResponse, error) {
 	var responseObj JsonResponse
-	err := sendRequest(apiUrl, message, &responseObj)
+	err := SendRequest(apiUrl, message, &responseObj)
 	if err != nil {
 		return nil, err
 	}

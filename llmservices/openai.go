@@ -23,9 +23,10 @@ func NewOpenAiServcie() *OpenAiService {
 }
 
 type CompletionRequest struct {
-	Messages []openai.ChatCompletionMessage
-	Model    string
-	Stream   bool
+	Messages    []openai.ChatCompletionMessage
+	Model       string
+	Stream      bool
+	Temperature float32
 }
 
 type EmbeddingRequest struct {
@@ -39,9 +40,10 @@ func (serviceInstance *OpenAiService) Completion(ctx context.Context, req Comple
 	}
 
 	request := openai.ChatCompletionRequest{
-		Model:    req.Model,
-		Messages: req.Messages,
-		Stream:   req.Stream,
+		Model:       req.Model,
+		Messages:    req.Messages,
+		Stream:      req.Stream,
+		Temperature: req.Temperature,
 	}
 
 	if req.Stream {
