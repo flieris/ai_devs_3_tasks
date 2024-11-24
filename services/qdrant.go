@@ -9,4 +9,4 @@ type QdrantService struct {
 	CollectionName string
 }
 
-func (client QdrantService) CreateCollection(ctx context)
+// func (client QdrantService) CreateCollection(ctx context)
