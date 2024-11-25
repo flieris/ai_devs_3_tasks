@@ -48,3 +48,18 @@ func SendChatCompletion(chatCompletionRequest OllamaChatCompletion, ollamaUrl st
 	}
 	return
 }
+
+func SendMessage(ollamaUrl, model string, messages *[]OllamaChatCompletionMessage) error {
+	req := OllamaChatCompletion{
+		Messages: *messages,
+		Model:    model,
+		Stream:   false,
+	}
+	reqUrl := ollamaUrl
+	response, err := SendChatCompletion(req, reqUrl)
+	if err != nil {
+		return err
+	}
+	*messages = append(*messages, response.Message)
+	return nil
+}

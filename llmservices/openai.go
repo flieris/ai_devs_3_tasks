@@ -94,3 +94,24 @@ func (serviceInstance *OpenAiService) CreateEmbedding(ctx context.Context, req o
 
 	return resp, nil
 }
+
+func (s *OpenAiService) SendMessage(ctx context.Context, messages *[]openai.ChatCompletionMessage, model string) error {
+	req := CompletionRequest{
+		Messages:    *messages,
+		Model:       model, // or leave empty for default GPT-4
+		Stream:      false,
+		Temperature: 0,
+	}
+
+	resp, _, err := s.Completion(ctx, req)
+	if err != nil {
+		return err
+	}
+
+	content := resp.Choices[0].Message.Content
+	*messages = append(*messages, openai.ChatCompletionMessage{
+		Role:    openai.ChatMessageRoleAssistant,
+		Content: content,
+	})
+	return nil
+}
