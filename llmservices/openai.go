@@ -34,6 +34,11 @@ type EmbeddingRequest struct {
 	Model string
 }
 
+type MessageContent struct {
+	Thinking string   `json:"_thinking"`
+	Answers  []string `json:"answers"`
+}
+
 func (serviceInstance *OpenAiService) Completion(ctx context.Context, req CompletionRequest) (*openai.ChatCompletionResponse, *openai.ChatCompletionStream, error) {
 	if req.Model == "" {
 		req.Model = openai.GPT4

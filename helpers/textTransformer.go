@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
 
 const (
@@ -81,4 +82,23 @@ func ReadMapFromFile(filename string) (map[string]FileData, error) {
 		return nil, err
 	}
 	return data, nil
+}
+
+func AppendUnique(slice []string, value string, seen map[string]bool) []string {
+	if !seen[value] {
+		slice = append(slice, value)
+		seen[value] = true
+	}
+	return slice
+}
+
+func RemoveFromSliceIfContains(slice []string, value string) []string {
+	result := []string{}
+
+	for _, v := range slice {
+		if !strings.Contains(v, value) {
+			result = append(result, v)
+		}
+	}
+	return result
 }
