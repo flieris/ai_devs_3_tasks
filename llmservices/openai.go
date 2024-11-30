@@ -120,3 +120,14 @@ func (s *OpenAiService) SendMessage(ctx context.Context, messages *[]openai.Chat
 	})
 	return nil
 }
+
+func (s *OpenAiService) GetEmbeddings(ctx context.Context, content string) ([]float32, error) {
+	req, err := s.CreateEmbedding(ctx, openai.EmbeddingRequest{
+		Model: openai.SmallEmbedding3,
+		Input: content,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return req.Data[0].Embedding, nil
+}

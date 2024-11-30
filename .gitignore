@@ -3,8 +3,11 @@
 *.m4a
 *.json
 *.jsonl
+*.pdf
+*.txt
 # directories
 przesluchania/
 images/
 pliki-z-fabryki/
 lab_data/
+output/

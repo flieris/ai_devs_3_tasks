@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 	"time"
 )
@@ -27,6 +28,8 @@ type JsonAnswer struct {
 type JsonResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
+	Hint    string `json:"hint.omitempty"`
+	Debug   string `json:"debug,omitempty"`
 }
 
 func SendRequest(apiUrl string, requestBody interface{}, responseObj interface{}) error {
@@ -98,6 +101,36 @@ func GetData(apiUrl string) ([]byte, error) {
 		return nil, err
 	}
 	return body, nil
+}
+
+func DownloadFile(url string) (string, error) {
+	// Create a custom HTTP client with timeout
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+
+	// Create a request with custom headers
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return "", err
+	}
+
+	// Make the request
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	filename := path.Base(req.URL.Path)
+	out, err := os.Create("./" + filename)
+	if err != nil {
+		return "", nil
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, resp.Body)
+
+	return out.Name(), nil
 }
 
 func GetZip(apiUrl string, zipPath string) (err error) {
