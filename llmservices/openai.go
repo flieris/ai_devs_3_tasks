@@ -27,6 +27,7 @@ type CompletionRequest struct {
 	Model       string
 	Stream      bool
 	Temperature float32
+	Tool        []openai.Tool
 }
 
 type EmbeddingRequest struct {
@@ -58,7 +59,6 @@ func (serviceInstance *OpenAiService) Completion(ctx context.Context, req Comple
 		}
 		return nil, stream, nil
 	}
-
 	resp, err := serviceInstance.client.CreateChatCompletion(ctx, request)
 	if err != nil {
 		return nil, nil, fmt.Errorf("error creating chat completion: %w", err)
@@ -107,7 +107,6 @@ func (s *OpenAiService) SendMessage(ctx context.Context, messages *[]openai.Chat
 		Stream:      false,
 		Temperature: 0,
 	}
-
 	resp, _, err := s.Completion(ctx, req)
 	if err != nil {
 		return err

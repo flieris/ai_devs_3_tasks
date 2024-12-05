@@ -5,6 +5,7 @@
 *.jsonl
 *.pdf
 *.txt
+*.mp3
 # directories
 przesluchania/
 images/
